@@ -1,0 +1,13 @@
+﻿@"
+release/
+**/bin/
+**/obj/
+*.exe
+*.dll
+*.zip
+*.pdb
+*.log
+.vs/
+.idea/
+.vscode/
+"@ | Set-Content -Encoding UTF8 .gitignore

@@ -1,0 +1,14 @@
+<Application x:Class="SmartGameCache.Installer.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <SolidColorBrush x:Key="BgDark" Color="#0D1117" />
+        <SolidColorBrush x:Key="CardDark" Color="#161B22" />
+        <SolidColorBrush x:Key="BorderDark" Color="#30363D" />
+        <SolidColorBrush x:Key="AccentCyan" Color="#58A6FF" />
+        <SolidColorBrush x:Key="TextLight" Color="#E6EDF3" />
+        <SolidColorBrush x:Key="TextMuted" Color="#8B949E" />
+    </Application.Resources>
+</Application>
+

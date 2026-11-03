@@ -1,0 +1,240 @@
+<UserControl x:Class="SmartGameCache.UI.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:SmartGameCache.UI.ViewModels">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="0,0,0,24">
+
+            <!-- A. Page Header & Status Indicator -->
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Smart Game Cache" FontSize="24" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}"/>
+                    <TextBlock Text="Intelligent HDD Gaming Accelerator" FontSize="13.5" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <!-- Engine State Indicator & Refresh -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="#151A24" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="8" Padding="12,6" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Ellipse Width="8" Height="8" Fill="{Binding EngineStateBrush}" Margin="0,0,8,0"/>
+                            <TextBlock Text="{Binding EngineStateText, StringFormat='{}Engine: {0}'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Brush.Text.Primary}"/>
+                        </StackPanel>
+                    </Border>
+                    <Button Style="{StaticResource Style.Button.Secondary}" Command="{Binding RefreshCommand}" Padding="12,6">
+                        <TextBlock Text="↻ Refresh" FontSize="12"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- B. Two Primary Cache Sliders (RAM Cache & SSD Cache) -->
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="14"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- 1. RAM Cache Slider (Green Accent #22C55E) -->
+                <Border Grid.Column="0" Background="{StaticResource Brush.Bg.Card}" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="10" Padding="18">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="RAM CACHE (PREFETCH BUDGET)" FontSize="11" FontWeight="Bold" Foreground="#22C55E"/>
+                                <TextBlock Text="Warms Windows Cache Manager standby pages before launch" FontSize="11.5" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <!-- Prominent Value Display -->
+                            <Border Grid.Column="1" Background="#11241A" BorderBrush="#1B4D2E" BorderThickness="1" CornerRadius="6" Padding="10,4">
+                                <TextBlock Text="{Binding RamBudgetFormatted}" FontSize="16" FontWeight="Bold" Foreground="#22C55E"/>
+                            </Border>
+                        </Grid>
+
+                        <!-- RAM Slider -->
+                        <Slider Minimum="0.5" Maximum="5.0" SmallChange="0.5" LargeChange="0.5"
+                                Value="{Binding RamBudgetGb, Mode=TwoWay}"
+                                IsSnapToTickEnabled="True" TickFrequency="0.5"
+                                Style="{StaticResource Style.Slider.Ram}" Margin="0,6,0,6"/>
+
+                        <!-- Min & Max Labels -->
+                        <Grid Margin="0,0,0,10">
+                            <TextBlock Text="Min: 0.5 GB" FontSize="11" Foreground="{StaticResource Brush.Text.Muted}" HorizontalAlignment="Left"/>
+                            <TextBlock Text="Default: 2.0 GB" FontSize="11" Foreground="{StaticResource Brush.Text.Muted}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Max: 5.0 GB" FontSize="11" Foreground="{StaticResource Brush.Text.Muted}" HorizontalAlignment="Right"/>
+                        </Grid>
+
+                        <TextBlock Text="Maximum prefetch budget into OS standby memory; not permanently reserved. Dynamically throttles if system memory load exceeds 85%." 
+                                   FontSize="11" Foreground="{StaticResource Brush.Text.Muted}" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. SSD Cache Slider (Blue Accent #3B82F6) -->
+                <Border Grid.Column="2" Background="{StaticResource Brush.Bg.Card}" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="10" Padding="18">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="SSD CACHE (PERSISTENT QUOTA)" FontSize="11" FontWeight="Bold" Foreground="#3B82F6"/>
+                                <TextBlock Text="Persistent 128 KB sub-file chunk storage on fast SSD" FontSize="11.5" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <!-- Prominent Value Display -->
+                            <Border Grid.Column="1" Background="#111E33" BorderBrush="#1E3A66" BorderThickness="1" CornerRadius="6" Padding="10,4">
+                                <TextBlock Text="{Binding SsdQuotaFormatted}" FontSize="16" FontWeight="Bold" Foreground="#3B82F6"/>
+                            </Border>
+                        </Grid>
+
+                        <!-- SSD Slider -->
+                        <Slider Minimum="5" Maximum="100" SmallChange="5" LargeChange="5"
+                                Value="{Binding SsdQuotaGb, Mode=TwoWay}"
+                                IsSnapToTickEnabled="True" TickFrequency="5"
+                                Style="{StaticResource Style.Slider.Ssd}" Margin="0,6,0,6"/>
+
+                        <!-- Min & Max Labels -->
+                        <Grid Margin="0,0,0,10">
+                            <TextBlock Text="Min: 5 GB" FontSize="11" Foreground="{StaticResource Brush.Text.Muted}" HorizontalAlignment="Left"/>
+                            <TextBlock Text="Default: 30 GB" FontSize="11" Foreground="{StaticResource Brush.Text.Muted}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Max: 100 GB" FontSize="11" Foreground="{StaticResource Brush.Text.Muted}" HorizontalAlignment="Right"/>
+                        </Grid>
+
+                        <TextBlock Text="Persistent storage allocation on fast drive. Survives reboots; automatically manages ARC recency and TinyLFU frequency eviction." 
+                                   FontSize="11" Foreground="{StaticResource Brush.Text.Muted}" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- C. Four Compact Cache Overview Cards -->
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Card 1: SSD Cache Used -->
+                <Border Grid.Column="0" Background="{StaticResource Brush.Bg.Card}" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="8" Padding="14">
+                    <StackPanel>
+                        <TextBlock Text="SSD CACHE USED" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Muted}"/>
+                        <TextBlock Text="{Binding SsdCacheDisplay}" FontSize="16" FontWeight="Bold" Foreground="#3B82F6" Margin="0,6,0,2"/>
+                        <TextBlock Text="Active 128 KB chunks" FontSize="11" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Card 2: RAM Prefetch -->
+                <Border Grid.Column="2" Background="{StaticResource Brush.Bg.Card}" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="8" Padding="14">
+                    <StackPanel>
+                        <TextBlock Text="RAM PREFETCH" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Muted}"/>
+                        <TextBlock Text="{Binding RamPrefetchDisplay}" FontSize="16" FontWeight="Bold" Foreground="#22C55E" Margin="0,6,0,2"/>
+                        <TextBlock Text="Standby page allocation" FontSize="11" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Card 3: Games Monitored -->
+                <Border Grid.Column="4" Background="{StaticResource Brush.Bg.Card}" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="8" Padding="14">
+                    <StackPanel>
+                        <TextBlock Text="GAMES MONITORED" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Muted}"/>
+                        <TextBlock Text="{Binding GamesMonitoredDisplay}" FontSize="16" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}" Margin="0,6,0,2"/>
+                        <TextBlock Text="Registered game profiles" FontSize="11" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Card 4: Cache Hit Rate -->
+                <Border Grid.Column="6" Background="{StaticResource Brush.Bg.Card}" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="8" Padding="14">
+                    <StackPanel>
+                        <TextBlock Text="CACHE HIT RATE" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Muted}"/>
+                        <TextBlock Text="{Binding CacheHitRateDisplay}" FontSize="16" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}" Margin="0,6,0,2"/>
+                        <TextBlock Text="Empirical hit ratio" FontSize="11" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- D. Monitoring Status (Compact Section) -->
+            <Border Background="{StaticResource Brush.Bg.Card}" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="10" Padding="16" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="GAME SESSION MONITORING STATUS" FontSize="11.5" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Muted}" Margin="0,0,0,12"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Column 1: Monitored Game -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Active Game" FontSize="10.5" Foreground="{StaticResource Brush.Text.Muted}"/>
+                            <TextBlock Text="{Binding ActiveGameDisplay}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource Brush.Text.Primary}" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+
+                        <!-- Column 2: Source Drive -->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Source Drive" FontSize="10.5" Foreground="{StaticResource Brush.Text.Muted}"/>
+                            <TextBlock Text="{Binding SourceDriveDisplay}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource Brush.Text.Primary}" Margin="0,3,0,0"/>
+                        </StackPanel>
+
+                        <!-- Column 3: Drive Type -->
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Drive Type" FontSize="10.5" Foreground="{StaticResource Brush.Text.Muted}"/>
+                            <TextBlock Text="{Binding DriveTypeDisplay}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource Brush.Text.Primary}" Margin="0,3,0,0"/>
+                        </StackPanel>
+
+                        <!-- Column 4: Learning Status -->
+                        <StackPanel Grid.Column="6">
+                            <TextBlock Text="Learning Engine" FontSize="10.5" Foreground="{StaticResource Brush.Text.Muted}"/>
+                            <TextBlock Text="{Binding LearningStatusDisplay}" FontSize="12.5" FontWeight="SemiBold" Foreground="#3B82F6" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- E. Recent Acceleration Activity (Bottom of Dashboard) -->
+            <Border Background="{StaticResource Brush.Bg.Card}" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="10" Padding="16">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <TextBlock Text="RECENT ACCELERATION ACTIVITY" FontSize="12" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}" VerticalAlignment="Center"/>
+                        <Button HorizontalAlignment="Right" Style="{StaticResource Style.Button.Secondary}" Command="{Binding ViewAllActivityCommand}" Padding="10,4">
+                            <TextBlock Text="View All Activity →" FontSize="11.5" Foreground="{StaticResource Brush.Accent.Blue}"/>
+                        </Button>
+                    </Grid>
+
+                    <ItemsControl ItemsSource="{Binding RecentActivities}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="0,0,0,1" Padding="0,7">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding TimeString}" FontSize="11.5" Foreground="{StaticResource Brush.Text.Muted}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="12" FontWeight="SemiBold" Foreground="#3B82F6" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Description}" FontSize="12" Foreground="{StaticResource Brush.Text.Secondary}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

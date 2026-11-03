@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SmartGameCache.Core/SmartGameCache.Core.csproj" />
+    <Project Path="src/SmartGameCache.UI/SmartGameCache.UI.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SmartGameCache.Tests/SmartGameCache.Tests.csproj" />
+  </Folder>
+</Solution>

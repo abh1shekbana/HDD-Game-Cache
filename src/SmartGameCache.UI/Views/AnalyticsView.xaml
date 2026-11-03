@@ -1,0 +1,122 @@
+<UserControl x:Class="SmartGameCache.UI.Views.AnalyticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:SmartGameCache.UI.Controls"
+             xmlns:vm="clr-namespace:SmartGameCache.UI.ViewModels">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="0,0,0,24">
+
+            <!-- Header -->
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Performance Analytics &amp; Telemetry" FontSize="22" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}"/>
+                    <TextBlock Text="Detailed metrics on storage acceleration, loading times, and verified cache hits" FontSize="13" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,3,0,0"/>
+                </StackPanel>
+                <Button Grid.Column="1" Style="{StaticResource Style.Button.Secondary}" Command="{Binding RefreshCommand}">
+                    <TextBlock Text="↻ Refresh Analytics"/>
+                </Button>
+            </Grid>
+
+            <!-- Metrics Overview Cards -->
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource Style.Card}">
+                    <StackPanel>
+                        <TextBlock Text="TOTAL OBSERVED READS" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Muted}"/>
+                        <TextBlock Text="{Binding TotalHddReadsBytes, Converter={StaticResource BytesConverter}}" FontSize="20" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}" Margin="0,8,0,4"/>
+                        <TextBlock Text="Monitored game disk transfers" FontSize="11" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource Style.Card}">
+                    <StackPanel>
+                        <TextBlock Text="CACHE INTERCEPTED" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Muted}"/>
+                        <TextBlock Text="{Binding VerifiedHitsBytes, Converter={StaticResource BytesConverter}}" FontSize="20" FontWeight="Bold" Foreground="{StaticResource Brush.Accent.Green}" Margin="0,8,0,4"/>
+                        <TextBlock Text="Transfers served from SSD/RAM" FontSize="11" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="4" Style="{StaticResource Style.Card}">
+                    <StackPanel>
+                        <TextBlock Text="OVERALL HIT RATIO" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Muted}"/>
+                        <TextBlock Text="{Binding OverallHitRatePercent, StringFormat='{}{0:0.#}%'}" FontSize="20" FontWeight="Bold" Foreground="{StaticResource Brush.Accent.Blue}" Margin="0,8,0,4"/>
+                        <TextBlock Text="Avoided mechanical latency" FontSize="11" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="6" Style="{StaticResource Style.Card}">
+                    <StackPanel>
+                        <TextBlock Text="ESTIMATED TIME SAVED" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Muted}"/>
+                        <TextBlock Text="{Binding LoadingTimeSavedSeconds, StringFormat='{}{0:0.#}s'}" FontSize="20" FontWeight="Bold" Foreground="{StaticResource Brush.Accent.Amber}" Margin="0,8,0,4"/>
+                        <TextBlock Text="Accumulated HDD seek reduction" FontSize="11" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Cold vs Warm Session Comparison Section -->
+            <Border Style="{StaticResource Style.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <Grid Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="SESSION COMPARISON ANALYSIS" FontSize="12" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}"/>
+                            <TextBlock Text="Compare traditional cold HDD launches against learned SSD + RAM preheated launches" FontSize="12" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <!-- Game Selector -->
+                        <ComboBox HorizontalAlignment="Right" ItemsSource="{Binding AvailableGames}" SelectedItem="{Binding SelectedGame}" DisplayMemberPath="Name" MinWidth="180"/>
+                    </Grid>
+
+                    <Border Background="#141722" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="8" Padding="14">
+                        <StackPanel>
+                            <TextBlock Text="{Binding ComparisonSummary}" FontSize="13" Foreground="{StaticResource Brush.Text.Primary}" TextWrapping="Wrap"/>
+
+                            <!-- Visual Comparison Bars -->
+                            <Grid Margin="0,16,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Baseline Cold HDD Launch:" FontSize="12" Foreground="{StaticResource Brush.Text.Secondary}" VerticalAlignment="Center"/>
+                                <ProgressBar Grid.Row="0" Grid.Column="1" Value="100" Maximum="100" Height="10" Style="{StaticResource Style.ProgressBar.Modern}" Foreground="{StaticResource Brush.Accent.Red}" Margin="10,0"/>
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="100%" FontSize="12" Foreground="{StaticResource Brush.Text.Secondary}" VerticalAlignment="Center"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Learned Cache Launch:" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Brush.Accent.Green}" VerticalAlignment="Center" Margin="0,10,0,0"/>
+                                <ProgressBar Grid.Row="1" Grid.Column="1" Value="42" Maximum="100" Height="10" Style="{StaticResource Style.ProgressBar.Modern}" Foreground="{StaticResource Brush.Accent.Green}" Margin="10,10,10,0"/>
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="42%" FontSize="12" FontWeight="Bold" Foreground="{StaticResource Brush.Accent.Green}" VerticalAlignment="Center" Margin="0,10,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Loading Time Correlation & Storage Stutter Insights -->
+            <Border Style="{StaticResource Style.Card}">
+                <StackPanel>
+                    <TextBlock Text="STORAGE STUTTER CORRELATION INSIGHTS" FontSize="12" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}" Margin="0,0,0,8"/>
+                    <TextBlock Text="Mechanical HDDs experience random seek times of 12–18 ms per read operation. When open-world games stream high-resolution textures or sound cues, queuing multiple concurrent random disk reads creates observable asset streaming frame drops. Pre-populating these frequently accessed hot regions onto SSD storage cuts access latency to under 0.05 ms, effectively eliminating storage-induced frametime spikes." 
+                               FontSize="12.5" Foreground="{StaticResource Brush.Text.Secondary}" TextWrapping="Wrap" LineHeight="20"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
+

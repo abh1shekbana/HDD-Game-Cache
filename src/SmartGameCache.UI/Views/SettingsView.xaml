@@ -1,0 +1,103 @@
+<UserControl x:Class="SmartGameCache.UI.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:SmartGameCache.UI.ViewModels">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="0,0,0,24">
+
+            <!-- Header -->
+            <Grid Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="Application Settings" FontSize="22" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}"/>
+                    <TextBlock Text="Manage background learning, elevation permissions, and diagnostic logging" FontSize="13" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,3,0,0"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Status Feedback -->
+            <Border Background="#1C2232" BorderBrush="{StaticResource Brush.Accent.Blue}" BorderThickness="1" 
+                    CornerRadius="8" Padding="12" Margin="0,0,0,16"
+                    Visibility="{Binding StatusFeedback.Length, Converter={StaticResource BoolToVisConverter}}">
+                <TextBlock Text="{Binding StatusFeedback}" FontSize="12.5" Foreground="{StaticResource Brush.Accent.Blue}"/>
+            </Border>
+
+            <!-- MONITORING & ELEVATION PRIVILEGES -->
+            <Border Style="{StaticResource Style.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="WINDOWS ETW KERNEL I/O MONITORING" FontSize="12" FontWeight="Bold" Foreground="{StaticResource Brush.Accent.Blue}" Margin="0,0,0,4"/>
+                    <TextBlock Text="ETW Kernel File I/O session requires administrator privileges to trace precise byte offsets and process IDs directly from the Windows NT Kernel logger." FontSize="12" Foreground="{StaticResource Brush.Text.Secondary}" Margin="0,0,0,12"/>
+
+                    <Border Background="#131620" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" CornerRadius="8" Padding="14">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Current Elevation Status:" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Muted}"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                    <Border Background="{Binding IsElevated, Converter={StaticResource StorageBadgeConverter}}" CornerRadius="4" Padding="6,2" Margin="0,0,8,0">
+                                        <TextBlock Text="{Binding IsElevated, StringFormat='{}Administrator: {0}'}" FontSize="11" FontWeight="Bold" Foreground="White"/>
+                                    </Border>
+                                    <TextBlock Text="Kernel ETW trace active" FontSize="12" Foreground="{StaticResource Brush.Text.Secondary}" VerticalAlignment="Center" Visibility="{Binding IsElevated, Converter={StaticResource BoolToVisConverter}}"/>
+                                    <TextBlock Text="Running standard user mode (Process I/O fallback)" FontSize="12" Foreground="{StaticResource Brush.Accent.Amber}" VerticalAlignment="Center" Visibility="{Binding IsElevated, Converter={StaticResource InvertedBoolToVisConverter}}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Button Grid.Column="1" VerticalAlignment="Center" Content="🛡 Restart as Administrator" 
+                                    Style="{StaticResource Style.Button.Primary}" Command="{Binding RestartElevatedCommand}"
+                                    Visibility="{Binding IsElevated, Converter={StaticResource InvertedBoolToVisConverter}}"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- AUTOMATION & BEHAVIOR -->
+            <Border Style="{StaticResource Style.Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="AUTOMATION &amp; ACCELERATION BEHAVIOR" FontSize="12" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}" Margin="0,0,0,14"/>
+
+                    <CheckBox IsChecked="{Binding AutoDetectGames}" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Automatic Game Detection" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Brush.Text.Primary}"/>
+                            <TextBlock Text="Automatically scans Steam, Epic Games, and Rockstar registries for newly installed titles" FontSize="11.5" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                        </StackPanel>
+                    </CheckBox>
+
+                    <CheckBox IsChecked="{Binding AutoMonitoring}" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Automatic Game Session Monitoring" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Brush.Text.Primary}"/>
+                            <TextBlock Text="Automatically attaches file I/O learning when a recognized game process starts" FontSize="11.5" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                        </StackPanel>
+                    </CheckBox>
+
+                    <CheckBox IsChecked="{Binding AutoPreload}" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Automatic RAM Cache Pre-warming" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Brush.Text.Primary}"/>
+                            <TextBlock Text="Pre-heats Windows Cache Manager standby pages before launching games" FontSize="11.5" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                        </StackPanel>
+                    </CheckBox>
+
+                    <CheckBox IsChecked="{Binding MinimizeToTray}">
+                        <StackPanel>
+                            <TextBlock Text="Minimize to System Tray" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Brush.Text.Primary}"/>
+                            <TextBlock Text="Keep accelerator running quietly in the background during active gameplay" FontSize="11.5" Foreground="{StaticResource Brush.Text.Secondary}"/>
+                        </StackPanel>
+                    </CheckBox>
+                </StackPanel>
+            </Border>
+
+            <!-- DIAGNOSTICS & RESET -->
+            <Border Style="{StaticResource Style.Card}">
+                <StackPanel>
+                    <TextBlock Text="DIAGNOSTICS &amp; MAINTENANCE" FontSize="12" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}" Margin="0,0,0,12"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Export Diagnostic Report" Style="{StaticResource Style.Button.Secondary}" Command="{Binding ExportDiagnosticReportCommand}" Margin="0,0,10,0"/>
+                        <Button Content="Reset Settings to Defaults" Style="{StaticResource Style.Button.Danger}" Command="{Binding ResetSettingsCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
+

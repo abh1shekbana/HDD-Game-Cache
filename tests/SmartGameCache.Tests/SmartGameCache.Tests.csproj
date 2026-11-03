@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SmartGameCache.Core\SmartGameCache.Core.csproj" />
+    <ProjectReference Include="..\..\src\SmartGameCache.UI\SmartGameCache.UI.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon></ApplicationIcon>
+    <Version>1.0.0.0</Version>
+    <Product>Smart Game Cache Installer</Product>
+    <Company>Smart Game Cache Systems</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\release\SmartGameCache-Portable.zip">
+      <Link>Payload.zip</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
+
